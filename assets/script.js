@@ -45,7 +45,6 @@ function initMap () {
 
 function plotAircrafts (aircrafts) {
   aircrafts.forEach(function (_aircraft) {
-    console.log(_aircraft)
     const aircraft = aircraftIndex[_aircraft.icao]
     if (aircraft) aircraft.update(_aircraft)
     else aircraftIndex[_aircraft.icao] = new Aircraft(_aircraft)
@@ -57,7 +56,6 @@ function pruneMarkers () {
   const threshold = Date.now() - 120000 // prune all aircrafts we haven't seen in two minutes
   aircrafts().forEach(function (aircraft) {
     if (aircraft.seen < threshold) {
-      console.log('pruning!', aircraft)
       if (aircraft.marker === selectedMarker) {
         infoPanel.style.display = 'none'
       }
@@ -106,13 +104,11 @@ Aircraft.prototype.update = function (aircraft) {
 
   // eslint-disable-next-line no-undef
   const pos = new google.maps.LatLng(this.lat, this.lng)
-  console.log(pos)
 
   planeIcon.rotation = this.heading
   planeIcon.strokeWeight = 0
 
   if (this.marker) {
-    console.log('found marker', this.marker)
     if (this.marker === selectedMarker) {
       planeIcon.strokeWeight = 1
       infoPanel.innerHTML = this.toHTML()
@@ -127,7 +123,6 @@ Aircraft.prototype.update = function (aircraft) {
       icon: planeIcon,
       title: this.callsign
     })
-    console.log('new marker', this.marker)
     this.marker.addListener('click', onAircraftClick)
   }
 }
