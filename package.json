@@ -1,6 +1,6 @@
 {
   "name": "airplanejs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An ADS-B receiver which plots nearby airplanes on a map live",
   "bin": "server.js",
   "dependencies": {
@@ -51,7 +51,7 @@
   },
   "homepage": "https://github.com/watson/airplanejs#readme",
   "coordinates": [
-    55.777645,
-    12.590215
+    55.777656,
+    12.59026
   ]
 }
