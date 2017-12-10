@@ -47,14 +47,21 @@ apt-get install librtlsdr-dev
 
 ## Usage
 
+The easiest way to run AirplaneJS is using the `npx` command that you'll
+have availble if you have Node.js installed. Simply plug in your RTL-SDR
+dongle and type:
+
 ```
 npx airplanejs
 ```
 
-This should open your default browser at
+This will download and run AirplaneJS without any hassle.
+
+When AirplaneJS successfully have connected to the USB dongle, your
+default browser should automatically open to
 [http://localhost:3000](http://localhost:3000).
 
-Alternative approach:
+Alternative install the module globally like in the old days:
 
 1. Install AirplaneJS globally:
    ```
