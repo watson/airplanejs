@@ -71,9 +71,12 @@ function onAircraftClick () {
     const icon = aircraft.marker.getIcon()
     if (aircraft.marker === selectedMarker) {
       icon.strokeWeight = 1
+      aircraft.flightPath.setPath(aircraft.flightPathCoords)
+      aircraft.flightPath.setVisible(true)
       infoPanel.innerHTML = aircraft.toHTML()
     } else {
       icon.strokeWeight = 0
+      aircraft.flightPath.setVisible(false)
     }
     aircraft.marker.setIcon(icon)
   })
@@ -87,7 +90,18 @@ function aircrafts () {
   })
 }
 
-function Aircraft () {}
+function Aircraft () {
+  this.flightPathCoords = []
+  // eslint-disable-next-line no-undef
+  this.flightPath = new google.maps.Polyline({
+    geodesic: true,
+    strokeColor: '#ff0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2,
+    visible: false
+  })
+  this.flightPath.setMap(map)
+}
 
 Aircraft.prototype.update = function (aircraft) {
   this.icao = aircraft.icao
@@ -102,12 +116,15 @@ Aircraft.prototype.update = function (aircraft) {
   // eslint-disable-next-line no-undef
   const pos = new google.maps.LatLng(this.lat, this.lng)
 
+  this.flightPathCoords.push(pos)
+
   planeIcon.rotation = this.heading
   planeIcon.strokeWeight = 0
 
   if (this.marker) {
     if (this.marker === selectedMarker) {
       planeIcon.strokeWeight = 1
+      this.flightPath.setPath(this.flightPathCoords)
       infoPanel.innerHTML = this.toHTML()
     }
     this.marker.setPosition(pos)
