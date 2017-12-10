@@ -45,9 +45,8 @@ function initMap () {
 
 function plotAircrafts (aircrafts) {
   aircrafts.forEach(function (_aircraft) {
-    const aircraft = aircraftIndex[_aircraft.icao]
-    if (aircraft) aircraft.update(_aircraft)
-    else aircraftIndex[_aircraft.icao] = new Aircraft(_aircraft)
+    const aircraft = aircraftIndex[_aircraft.icao] = aircraftIndex[_aircraft.icao] || new Aircraft()
+    aircraft.update(_aircraft)
   })
   pruneMarkers()
 }
@@ -88,9 +87,7 @@ function aircrafts () {
   })
 }
 
-function Aircraft (aircraft) {
-  this.update(aircraft)
-}
+function Aircraft () {}
 
 Aircraft.prototype.update = function (aircraft) {
   this.icao = aircraft.icao
