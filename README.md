@@ -28,12 +28,10 @@ guide](https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/).
 
 ### Software
 
-This software also requires that you have
-[librtlsdr](https://github.com/steve-m/librtlsdr) installed on your
-system. In turn librtlsdr requires [libusb](http://libusb.info/).
-
-You can install librtlsdr with most package managers which will ensure
-you have the right dependencies.
+This software also requires that you have [Node.js](https://nodejs.org)
+and [librtlsdr](https://github.com/steve-m/librtlsdr) installed on your
+system. You can install librtlsdr with most package managers which will
+ensure you have the right dependencies.
 
 Homebrew (macOS):
 
