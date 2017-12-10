@@ -1,0 +1,52 @@
+{
+  "name": "airplanejs",
+  "version": "0.0.0",
+  "description": "An ADS-B receiver which plots nearby airplanes on a map live",
+  "bin": "server.js",
+  "dependencies": {
+    "get-port": "^3.2.0",
+    "mime-types": "^2.1.17",
+    "mode-s-aircraft-store": "^1.0.0",
+    "minimist": "^1.2.0",
+    "mode-s-demodulator": "^1.0.0",
+    "opn": "^5.1.0",
+    "rtl-sdr": "^0.1.2"
+  },
+  "devDependencies": {
+    "standard": "^10.0.3"
+  },
+  "scripts": {
+    "test": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/watson/airplanejs.git"
+  },
+  "keywords": [
+    "map",
+    "live",
+    "plot",
+    "browser",
+    "modes",
+    "mode-s",
+    "adsb",
+    "ads-b",
+    "sdr",
+    "rtlsdr",
+    "rtl-sdr",
+    "librtlsdr",
+    "radio",
+    "aircraft",
+    "airplane",
+    "airplanes",
+    "plane",
+    "1090",
+    "1090mhz"
+  ],
+  "author": "Thomas Watson <w@tson.dk> (https://twitter.com/wa7son)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/watson/airplanejs/issues"
+  },
+  "homepage": "https://github.com/watson/airplanejs#readme"
+}

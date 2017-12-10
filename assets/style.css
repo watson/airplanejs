@@ -1,0 +1,29 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+/* Always set the map height explicitly to define the size of the div
+ * element that contains the map. */
+#map {
+  height: 100%;
+}
+
+#info {
+  position: absolute;
+  top: 42px;
+  right: 13px;
+  z-index: 99;
+  display: none;
+  border: 1px solid gray;
+  background-color: #fff;
+  opacity: 0.8;
+  padding: 10px;
+}
+
+#info dl {
+  margin-top: 0;
+}
