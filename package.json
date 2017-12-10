@@ -11,6 +11,7 @@
     "mode-s-aircraft-store": "^1.0.0",
     "mode-s-demodulator": "^1.0.0",
     "opn": "^5.1.0",
+    "patterns": "^1.0.3",
     "rtl-sdr": "^0.1.2"
   },
   "devDependencies": {
