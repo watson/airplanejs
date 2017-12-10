@@ -11,6 +11,18 @@ This software requires an [RTL-SDR USB
 dongle](https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/) in order
 run.
 
+This software also requires that you have
+[librtlsdr](https://github.com/steve-m/librtlsdr) installed on your
+system. In turn librtlsdr requires [libusb](http://libusb.info/).
+
+You can install librtlsdr with most package managers which will ensure
+you have the right dependencies. To install using Homebrew on macOS,
+simply run:
+
+```
+brew install librtlsdr
+```
+
 ## Usage
 
 ```
