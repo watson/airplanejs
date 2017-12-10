@@ -9,9 +9,24 @@
 
 ## Prerequisites
 
-This software requires an [RTL-SDR USB
-dongle](https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/) in order
-run.
+### Hardware
+
+This software requires an [RTL-SDR USB dongle with an RTL2832U
+chip][az-search] in order run. Here's a few that I like:
+
+- [RTL-SDR.com dongle with 2x telescopic antennas][az-d1]
+- [Very tiny and cheap no-name RTL2832U dongle with an antenna][az-d2]
+- Or just [search Amazon for RTL2832U dongles][az-search]
+
+*Disclaimer: I'm trying out the Amazon Affiliate Program to support my
+free open source work. So if you decide to buy an RTL-SDR dongle using
+one of the links above I'll be greatful.*
+
+For more information about buying RTL-SDR dongles, check out the
+[RTL-SDR.com blog buyers
+guide](https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/).
+
+### Software
 
 This software also requires that you have
 [librtlsdr](https://github.com/steve-m/librtlsdr) installed on your
@@ -55,3 +70,7 @@ Alternative approach:
 ## License
 
 MIT
+
+[az-search]: https://www.amazon.com/gp/search/ref=as_li_qf_sp_sr_tl?ie=UTF8&tag=wa7son-20&keywords=RTL2832U&index=aps&camp=1789&creative=9325&linkCode=ur2&linkId=90c68a1417396c5538f5f30ca8ff74d0
+[az-d1]: https://www.amazon.com/gp/product/B011HVUEME/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B011HVUEME&linkCode=as2&tag=wa7son-20&linkId=ae47931667148dc42699cd9c9705422e
+[az-d2]: https://www.amazon.com/gp/product/B076H4MQBQ/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B076H4MQBQ&linkCode=as2&tag=wa7son-20&linkId=54c7091aa09eb38e512351437cdf43b8
