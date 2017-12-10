@@ -20,7 +20,7 @@ chip][az-search] in order run. Here's a few that I like:
 
 *Disclaimer: I'm trying out the Amazon Affiliate Program to support my
 free open source work. So if you decide to buy an RTL-SDR dongle using
-one of the links above I'll be greatful.*
+one of the links above I'll be grateful.*
 
 For more information about buying RTL-SDR dongles, check out the
 [RTL-SDR.com blog buyers
