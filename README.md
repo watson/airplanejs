@@ -2,6 +2,8 @@
 
 An ADS-B receiver which plots nearby airplanes on a map live.
 
+![Map with aircrafts plottet](https://user-images.githubusercontent.com/10602/33808194-7cca8eda-dde2-11e7-8542-e09d9e600791.png)
+
 [![Build status](https://travis-ci.org/watson/airplanejs.svg?branch=master)](https://travis-ci.org/watson/airplanejs)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
 
