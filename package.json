@@ -1,7 +1,7 @@
 {
   "name": "airplanejs",
   "version": "1.1.1",
-  "description": "An ADS-B receiver which plots nearby airplanes on a map live",
+  "description": "📡✈️ An ADS-B receiver which plots nearby airplanes on a map live",
   "bin": "server.js",
   "dependencies": {
     "debug": "^3.1.0",
