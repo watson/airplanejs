@@ -4,10 +4,11 @@
   "description": "An ADS-B receiver which plots nearby airplanes on a map live",
   "bin": "server.js",
   "dependencies": {
+    "debug": "^3.1.0",
     "get-port": "^3.2.0",
     "mime-types": "^2.1.17",
-    "mode-s-aircraft-store": "^1.0.0",
     "minimist": "^1.2.0",
+    "mode-s-aircraft-store": "^1.0.0",
     "mode-s-demodulator": "^1.0.0",
     "opn": "^5.1.0",
     "rtl-sdr": "^0.1.2"
