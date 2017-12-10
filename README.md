@@ -1,6 +1,6 @@
 # AirplaneJS
 
-An ADS-B receiver which plots nearby airplanes on a map live.
+📡 ✈️ An ADS-B receiver which plots nearby airplanes on a map live.
 
 ![Map with aircrafts plottet](https://user-images.githubusercontent.com/10602/33808194-7cca8eda-dde2-11e7-8542-e09d9e600791.png)
 
