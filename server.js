@@ -202,7 +202,7 @@ function help () {
   console.log('  --help -h            Show this help')
   console.log('  --version -v         Output AirplaneJS version')
   console.log('  --device -d <index>  Select RTL dongle (default: 0)')
-  console.log('  --frequency -f <hz>  Set custom frequency (default: 2000000)')
+  console.log('  --frequency -f <hz>  Set custom frequency (default: 1090000000)')
   console.log('  --gain -g <gain>     Set custom tuner gain')
   console.log('  --max-gain           Set tuner gain to highest possible value (default: on)')
   console.log('  --auto-gain          Disable manual tuner gain (default: off)')
