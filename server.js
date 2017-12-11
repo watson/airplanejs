@@ -175,12 +175,7 @@ function startServer () {
       const url = 'http://localhost:' + port
       if (argv.openBrowser) {
         console.log('Opening %s in your favorite browser...', url)
-        opn(url).then(function () {
-          console.log('Closing down RTL-SDR device...')
-          rtlsdr.cancel_async(dev)
-          rtlsdr.close(dev)
-          process.exit()
-        })
+        opn(url)
       } else {
         console.log('Server running at: %s', url)
       }
