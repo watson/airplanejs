@@ -58,6 +58,7 @@ function pruneMarkers () {
       if (aircraft.marker === selectedMarker) {
         infoPanel.style.display = 'none'
       }
+      aircraft.flightPath.setMap(null)
       aircraft.marker.setMap(null)
       delete aircraftIndex[aircraft.icao]
     }
