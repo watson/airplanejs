@@ -1,6 +1,6 @@
 {
   "name": "airplanejs",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "📡✈️ App that picks up ADS-B radio signals from airplanes and plots them live on a map in your browser",
   "bin": "server.js",
   "dependencies": {
@@ -52,7 +52,7 @@
   },
   "homepage": "https://github.com/watson/airplanejs#readme",
   "coordinates": [
-    55.777566,
-    12.589906
+    55.777546,
+    12.589735
   ]
 }
