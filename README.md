@@ -61,7 +61,7 @@ When AirplaneJS successfully have connected to the USB dongle, your
 default browser should automatically open to
 [http://localhost:3000](http://localhost:3000).
 
-Alternative install the module globally like in the old days:
+Alternatively install the module globally like in the old days:
 
 1. Install AirplaneJS globally:
    ```
