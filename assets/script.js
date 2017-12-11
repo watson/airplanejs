@@ -109,6 +109,7 @@ Aircraft.prototype.update = function (aircraft) {
   this.lat = aircraft.lat
   this.lng = aircraft.lng
   this.altitude = aircraft.altitude
+  this.unit = aircraft.unit
   this.heading = aircraft.heading
   this.speed = aircraft.speed
   this.callsign = aircraft.callsign
@@ -142,16 +143,21 @@ Aircraft.prototype.update = function (aircraft) {
 }
 
 Aircraft.prototype.toHTML = function () {
+  const unit = this.unit === 0 ? 'ft' : 'm'
+  const altitude = Number.isFinite(this.altitude) ? this.altitude + ' ' + unit : 'Unknown'
+  const speed = Number.isFinite(this.speed) ? this.speed + ' kts' : 'Unknown'
+  const track = Number.isFinite(this.heading) ? this.heading + '°' : 'Unknown'
+
   let html = `
     <dl>
       <dt>Call sign</dt>
       <dd>${this.callsign || 'Unknown'}</dd>
       <dt>Altitude</dt>
-      <dd>${Number.isFinite(this.altitude) ? this.altitude : 'Unknown'}</dd>
-      <dt>Speed</dt>
-      <dd>${Number.isFinite(this.speed) ? this.speed : 'Unknown'}</dd>
-      <dt>Heading</dt>
-      <dd>${Number.isFinite(this.heading) ? this.heading + '°' : 'Unknown'}</dd>
+      <dd>${altitude}</dd>
+      <dt>Ground speed</dt>
+      <dd>${speed}</dd>
+      <dt>Track</dt>
+      <dd>${track}</dd>
     </dl>
   `
 

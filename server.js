@@ -140,6 +140,7 @@ function startServer () {
           lat: aircraft.lat,
           lng: aircraft.lng,
           altitude: aircraft.altitude,
+          unit: aircraft.unit,
           heading: Math.round(aircraft.heading),
           speed: Math.round(aircraft.speed),
           callsign: aircraft.callsign
