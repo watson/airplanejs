@@ -48,8 +48,8 @@ apt-get install librtlsdr-dev
 ## Usage
 
 The easiest way to run AirplaneJS is using the `npx` command that you'll
-have availble if you have Node.js installed. Simply plug in your RTL-SDR
-dongle and type:
+have availble if you have Node.js 8+ installed. Simply plug in your
+RTL-SDR dongle and type:
 
 ```
 npx airplanejs
