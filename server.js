@@ -18,13 +18,19 @@ const DEFAULT_RATE = 2000000
 const DEFAULT_FREQ = 1090000000
 const ASYNC_BUF_NUMBER = 12
 const DATA_LEN = 16 * 16384 // 256k
-const AUTO_GAIN = -100      // Use automatic gain
-const MAX_GAIN = 999999     // Use max available gain
 
 process.on('SIGINT', exit)
 
 const argv = require('minimist')(process.argv.slice(2))
-argv.openBrowser = argv.openBrowser !== false // default to true
+
+if (argv.help || argv.h) {
+  help()
+  process.exit()
+}
+if (argv.version || argv.v) {
+  console.log(require('./package').version)
+  process.exit()
+}
 
 const ASSETS_FILES = fs.readdirSync(path.join(__dirname, 'assets'))
 
@@ -49,13 +55,13 @@ function onMsg (msg) {
   store.addMessage(msg)
 }
 
-function setupDevice (opts) {
-  opts = {
-    gain: MAX_GAIN,
-    dev_index: 0,
-    enable_agc: true,
-    freq: DEFAULT_FREQ
-  }
+function setupDevice () {
+  let gain = argv.gain || argv.g
+  const findMaxGain = !('gain' in argv || 'g' in argv)
+  const autoGain = argv['auto-gain'] || false
+  const enableAgc = argv['enable-agc'] || false
+  const devIndex = argv.device || argv.d || 0
+  const freq = argv.frequency || argv.f || DEFAULT_FREQ
 
   const ppmError = 0
   const vendor = Buffer.alloc(256)
@@ -71,33 +77,34 @@ function setupDevice (opts) {
   debug('Found %d device(s):', deviceCount)
   for (let j = 0; j < deviceCount; j++) {
     rtlsdr.get_device_usb_strings(j, vendor, product, serial)
-    debug('%d: %s, %s, SN: %s %s', j, vendor, product, serial, j === opts.dev_index ? '(currently selected)' : '')
+    debug('%d: %s, %s, SN: %s %s', j, vendor, product, serial, j === devIndex ? '(currently selected)' : '')
   }
 
-  const dev = rtlsdr.open(opts.dev_index)
+  const dev = rtlsdr.open(devIndex)
   if (typeof dev === 'number') {
     console.error('Error opening the RTLSDR device: %s', dev)
     process.exit(1)
   }
 
   // Set gain, frequency, sample rate, and reset the device
-  rtlsdr.set_tuner_gain_mode(dev, opts.gain === AUTO_GAIN ? 0 : 1)
-  if (opts.gain !== AUTO_GAIN) {
-    if (opts.gain === MAX_GAIN) {
+  rtlsdr.set_tuner_gain_mode(dev, autoGain ? 0 : 1)
+  if (!autoGain) {
+    if (findMaxGain) {
       // Find the maximum gain available
       const gains = new Int32Array(100)
       const numgains = rtlsdr.get_tuner_gains(dev, gains)
-      opts.gain = gains[numgains - 1]
-      debug('Max available gain is: %d', opts.gain / 10)
+      gain = gains[numgains - 1]
+      debug('Max available gain is: %d', gain / 10)
     }
-    rtlsdr.set_tuner_gain(dev, opts.gain)
-    debug('Setting gain to: %d', opts.gain / 10)
+    debug('Setting gain to: %d', gain / 10)
+    rtlsdr.set_tuner_gain(dev, gain)
   } else {
-    debug('Using automatic gain control.')
+    debug('Using automatic gain control')
   }
+
   rtlsdr.set_freq_correction(dev, ppmError)
-  if (opts.enable_agc) rtlsdr.set_agc_mode(dev, 1)
-  rtlsdr.set_center_freq(dev, opts.freq)
+  if (enableAgc) rtlsdr.set_agc_mode(dev, 1)
+  rtlsdr.set_center_freq(dev, freq)
   rtlsdr.set_sample_rate(dev, DEFAULT_RATE)
   rtlsdr.reset_buffer(dev)
   debug('Gain reported by device: %d', rtlsdr.get_tuner_gain(dev) / 10)
@@ -169,20 +176,39 @@ function startServer () {
     fn(req, res)
   })
 
-  if (argv.port) listen(argv.port)
+  const customPort = argv.port || argv.p
+
+  if (customPort) listen(customPort)
   else getPort({port: 3000}).then(listen)
 
   function listen (port) {
     server.listen(port, function () {
       const url = 'http://localhost:' + port
-      if (argv.openBrowser) {
+      if (argv.browser === false) {
+        console.log('Server running at: %s', url)
+      } else {
         console.log('Opening %s in your favorite browser...', url)
         opn(url)
-      } else {
-        console.log('Server running at: %s', url)
       }
     })
   }
+}
+
+function help () {
+  console.log('Usage:')
+  console.log('  airplanejs [options]')
+  console.log()
+  console.log('Options:')
+  console.log('  --help -h            Show this help')
+  console.log('  --version -v         Output AirplaneJS version')
+  console.log('  --device -d <index>  Select RTL dongle (default: 0)')
+  console.log('  --frequency -f <hz>  Set custom frequency (default: 2000000)')
+  console.log('  --gain -g <gain>     Set custom tuner gain')
+  console.log('  --max-gain           Set tuner gain to highest possible value (default: on)')
+  console.log('  --auto-gain          Disable manual tuner gain (default: off)')
+  console.log('  --enable-agc         Use Automatic Gain Control (default: off)')
+  console.log('  --port -p <port>     Set custom HTTP server port (default: 3000)')
+  console.log('  --no-browser         Disable automatic opening of default browser')
 }
 
 function exit () {
