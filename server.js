@@ -81,8 +81,7 @@ function setupDevice (opts) {
   }
 
   // Set gain, frequency, sample rate, and reset the device
-  rtlsdr.set_tuner_gain_mode(dev,
-      (opts.gain === AUTO_GAIN) ? 0 : 1)
+  rtlsdr.set_tuner_gain_mode(dev, opts.gain === AUTO_GAIN ? 0 : 1)
   if (opts.gain !== AUTO_GAIN) {
     if (opts.gain === MAX_GAIN) {
       // Find the maximum gain available
