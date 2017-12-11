@@ -21,6 +21,8 @@ const DATA_LEN = 16 * 16384 // 256k
 const AUTO_GAIN = -100      // Use automatic gain
 const MAX_GAIN = 999999     // Use max available gain
 
+process.on('SIGINT', exit)
+
 const argv = require('minimist')(process.argv.slice(2))
 argv.openBrowser = argv.openBrowser !== false // default to true
 
@@ -181,4 +183,11 @@ function startServer () {
       }
     })
   }
+}
+
+function exit () {
+  console.log('Closing down RTL-SDR device...')
+  rtlsdr.cancel_async(dev)
+  rtlsdr.close(dev)
+  process.exit()
 }
