@@ -1,6 +1,6 @@
 # AirplaneJS
 
-📡 ✈️ An SDR app written in JavaScript that picks up ADS-B radio signals from airplanes and plots them live on a map in your browser ✨🐢🚀✨
+📡 ✈️ An SDR app written in JavaScript that picks up ADS-B radio signals from airplanes and plots them in real time on a map in your browser ✨🐢🚀✨
 
 ![Map with aircrafts plottet](https://user-images.githubusercontent.com/10602/33808194-7cca8eda-dde2-11e7-8542-e09d9e600791.png)
 
