@@ -82,7 +82,6 @@ The following options are available when running `airplanejs`:
 - `--device <index>` - Select RTL dongle (alias: `-d`, default: `0`)
 - `--frequency <hz>` - Set custom frequency (alias: `-f`, default: `1090000000`)
 - `--gain <gain>` - Set custom tuner gain (alias: `-g`)
-- `--max-gain` - Set tuner gain to highest possible value (default: on)
 - `--auto-gain` - Disable manual tuner gain (default: off)
 - `--enable-agc` - Use Automatic Gain Control (default: off)
 - `--port <port>` - Set custom HTTP server port (alias: `-p`, default: `3000`)

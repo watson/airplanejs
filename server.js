@@ -204,7 +204,6 @@ function help () {
   console.log('  --device -d <index>  Select RTL dongle (default: 0)')
   console.log('  --frequency -f <hz>  Set custom frequency (default: 1090000000)')
   console.log('  --gain -g <gain>     Set custom tuner gain')
-  console.log('  --max-gain           Set tuner gain to highest possible value (default: on)')
   console.log('  --auto-gain          Disable manual tuner gain (default: off)')
   console.log('  --enable-agc         Use Automatic Gain Control (default: off)')
   console.log('  --port -p <port>     Set custom HTTP server port (default: 3000)')
