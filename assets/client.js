@@ -37,10 +37,15 @@ function initMap () {
       : new google.maps.LatLng(48.9062802, 2.3598659) // eslint-disable-line no-undef
   })
 
-  setInterval(function () {
-    // eslint-disable-next-line no-undef
-    $.getJSON({url: 'aircrafts', type: 'GET', success: plotAircrafts})
-  }, 2000)
+  onJQuery(function () {
+    setInterval(function () {
+      // eslint-disable-next-line no-undef
+      $.getJSON('aircrafts', plotAircrafts)
+        .fail(function (jqXHR, textStatus, err) {
+          throw err
+        })
+    }, 2000)
+  })
 }
 
 function plotAircrafts (aircrafts) {
@@ -89,6 +94,11 @@ function aircrafts () {
   return Object.keys(aircraftIndex).map(function (icao) {
     return aircraftIndex[icao]
   })
+}
+
+function onJQuery (cb) {
+  if (window.jQuery) cb()
+  else setTimeout(onJQuery.bind(null, cb), 50)
 }
 
 function Aircraft () {
