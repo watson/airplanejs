@@ -132,6 +132,35 @@ function startServer () {
     fs.createReadStream(path.join(__dirname, 'assets', filename)).pipe(res)
   })
 
+  patterns.add('GET /airlines', function (req, res) {
+    let first = true
+    res.setHeader('Content-Type', 'application/json')
+
+    fs.createReadStream(path.join(__dirname, 'data', 'airlines.csv'))
+      .pipe(csv(['id', 'name', 'alias', 'IATA', 'ICAO', 'callsign', 'country', 'active']))
+      .on('error', function (err) {
+        console.error(err.stack)
+        if (first) res.writeHead(500)
+        res.end()
+      })
+      .on('data', function (row) {
+        Object.keys(row).forEach(function (key) {
+          if (row[key] === '\\N') row[key] = null
+        })
+        row.id = Number.parseInt(row.id, 10)
+        row.active = row.active === 'Y'
+
+        // defunct airlines are not flying planes, so no need to return those
+        if (!row.active) return
+
+        res.write((first ? '[\n' : ',') + JSON.stringify(row) + '\n')
+        first = false
+      })
+      .on('end', function () {
+        res.end(']')
+      })
+  })
+
   patterns.add('GET /airports', function (req, res) {
     let first = true
     res.setHeader('Content-Type', 'application/json')

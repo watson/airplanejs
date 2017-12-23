@@ -1,6 +1,7 @@
 'use strict'
 
 const aircraftIndex = {}
+const airlineICAOIndex = {}
 const infoPanel = document.getElementById('info')
 let map, selectedMarker, planeIcon, currentPosition, openInfoWindow
 
@@ -44,6 +45,12 @@ function initMap () {
         throw err
       })
 
+    // eslint-disable-next-line no-undef
+    $.getJSON('airlines', parseAirlines)
+      .fail(function (jqXHR, textStatus, err) {
+        throw err
+      })
+
     setInterval(function () {
       // eslint-disable-next-line no-undef
       $.getJSON('aircrafts', plotAircrafts)
@@ -51,6 +58,12 @@ function initMap () {
           throw err
         })
     }, 2000)
+  })
+}
+
+function parseAirlines (airlines) {
+  airlines.forEach(function (airline) {
+    airlineICAOIndex[airline.ICAO] = airline
   })
 }
 
@@ -202,9 +215,13 @@ Aircraft.prototype.toHTML = function () {
   const altitude = Number.isFinite(this.altitude) ? this.altitude + ' ' + unit : 'Unknown'
   const speed = Number.isFinite(this.speed) ? this.speed + ' kts' : 'Unknown'
   const track = Number.isFinite(this.heading) ? this.heading + '°' : 'Unknown'
+  const ICAO = this.callsign && this.callsign.slice(0, 3)
+  const airline = ICAO && airlineICAOIndex[ICAO]
 
   let html = `
     <dl>
+      <dt>Airline</dt>
+      <dd>${airline ? airline.name : 'Unknown'}</dd>
       <dt>Call sign</dt>
       <dd>${this.callsign || 'Unknown'}</dd>
       <dt>Altitude</dt>
