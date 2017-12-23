@@ -4,6 +4,7 @@
   "description": "📡✈️ App that picks up ADS-B radio signals from airplanes and plots them in real time on a map in your browser",
   "bin": "server.js",
   "dependencies": {
+    "csv-parser": "^1.12.0",
     "debug": "^3.1.0",
     "get-port": "^3.2.0",
     "mime-types": "^2.1.17",
@@ -18,6 +19,8 @@
     "standard": "^10.0.3"
   },
   "scripts": {
+    "data": "mkdir -p data && curl -o data/airports.csv https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat",
+    "postinstall": "npm run data",
     "test": "standard"
   },
   "repository": {

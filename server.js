@@ -8,6 +8,7 @@ const http = require('http')
 const debug = require('debug')('airplanejs')
 const getPort = require('get-port')
 const opn = require('opn')
+const csv = require('csv-parser')
 const patterns = require('patterns')()
 const mime = require('mime-types')
 const rtlsdr = require('rtl-sdr')
@@ -129,6 +130,35 @@ function startServer () {
 
     res.setHeader('Content-Type', mime.lookup(filename))
     fs.createReadStream(path.join(__dirname, 'assets', filename)).pipe(res)
+  })
+
+  patterns.add('GET /airports', function (req, res) {
+    let first = true
+    res.setHeader('Content-Type', 'application/json')
+
+    fs.createReadStream(path.join(__dirname, 'data', 'airports.csv'))
+      .pipe(csv(['id', 'name', 'city', 'country', 'IATA', 'ICAO', 'lat', 'lng', 'altitude', 'utcOffset', 'DST', 'tz', 'type', 'source']))
+      .on('error', function (err) {
+        console.error(err.stack)
+        if (first) res.writeHead(500)
+        res.end()
+      })
+      .on('data', function (row) {
+        Object.keys(row).forEach(function (key) {
+          if (row[key] === '\\N') row[key] = null
+        })
+        row.id = Number.parseInt(row.id, 10)
+        row.lat = row.lat ? Number.parseFloat(row.lat) : null
+        row.lng = row.lng ? Number.parseFloat(row.lng) : null
+        row.utcOffset = row.utcOffset ? Number.parseFloat(row.utcOffset) : null
+        row.altitude = row.altitude ? Number.parseInt(row.altitude, 10) : null
+
+        res.write((first ? '[\n' : ',') + JSON.stringify(row) + '\n')
+        first = false
+      })
+      .on('end', function () {
+        res.end(']')
+      })
   })
 
   patterns.add('GET /aircrafts', function (req, res) {

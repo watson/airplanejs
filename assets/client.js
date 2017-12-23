@@ -2,7 +2,7 @@
 
 const aircraftIndex = {}
 const infoPanel = document.getElementById('info')
-let map, selectedMarker, planeIcon, currentPosition
+let map, selectedMarker, planeIcon, currentPosition, openInfoWindow
 
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(function (position) {
@@ -38,6 +38,12 @@ function initMap () {
   })
 
   onJQuery(function () {
+    // eslint-disable-next-line no-undef
+    $.getJSON('airports', plotAirports)
+      .fail(function (jqXHR, textStatus, err) {
+        throw err
+      })
+
     setInterval(function () {
       // eslint-disable-next-line no-undef
       $.getJSON('aircrafts', plotAircrafts)
@@ -46,6 +52,44 @@ function initMap () {
         })
     }, 2000)
   })
+}
+
+function plotAirports (airports) {
+  const airportIcon = {
+    path: 'M182.9,551.7c0,0.1,0.2,0.3,0.2,0.3S358.3,283,358.3,194.6c0-130.1-88.8-186.7-175.4-186.9 C96.3,7.9,7.5,64.5,7.5,194.6c0,88.4,175.3,357.4,175.3,357.4S182.9,551.7,182.9,551.7z M122.2,187.2c0-33.6,27.2-60.8,60.8-60.8 c33.6,0,60.8,27.2,60.8,60.8S216.5,248,182.9,248C149.4,248,122.2,220.8,122.2,187.2z',
+    anchor: new google.maps.Point(182, 560), // eslint-disable-line no-undef
+    fillColor: '#00aeef',
+    fillOpacity: 1,
+    scale: 0.03
+  }
+
+  airports.forEach(function (airport) {
+    // eslint-disable-next-line no-undef
+    const marker = new google.maps.Marker({
+      position: {lat: airport.lat, lng: airport.lng},
+      map: map,
+      title: airport.name,
+      icon: airportIcon
+    })
+    // eslint-disable-next-line no-undef
+    const infoWindow = new google.maps.InfoWindow({
+      content: `
+        <h3>${airport.name}</h3>
+        <table class="list">
+          <tr><th>IATA</th><td>${airport.IATA || 'n/a'}</td></tr>
+          <tr><th>ICAO</th><td>${airport.ICAO || 'n/a'}</td></tr>
+          <tr><th>Altitude</th><td>${airport.altitude === null ? 'n/a' : airport.altitude + ' ft'}</td></tr>
+        </table>
+      `
+    })
+    marker.addListener('click', airportClick.bind(infoWindow, marker))
+  })
+
+  function airportClick (marker) {
+    if (openInfoWindow) openInfoWindow.close()
+    this.open(map, marker)
+    openInfoWindow = this
+  }
 }
 
 function plotAircrafts (aircrafts) {

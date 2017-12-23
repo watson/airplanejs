@@ -27,3 +27,7 @@ html, body {
 #info dl {
   margin-top: 0;
 }
+
+table.list th {
+  text-align: left;
+}
