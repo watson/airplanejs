@@ -136,7 +136,7 @@ function startServer () {
     let first = true
     res.setHeader('Content-Type', 'application/json')
 
-    fs.createReadStream(path.join(__dirname, 'data', 'airlines.csv'))
+    fs.createReadStream(path.join(__dirname, 'data', 'airlines.csv'), {encoding: 'latin1'})
       .pipe(csv(['id', 'name', 'alias', 'IATA', 'ICAO', 'callsign', 'country', 'active']))
       .on('error', function (err) {
         console.error(err.stack)
@@ -165,7 +165,7 @@ function startServer () {
     let first = true
     res.setHeader('Content-Type', 'application/json')
 
-    fs.createReadStream(path.join(__dirname, 'data', 'airports.csv'))
+    fs.createReadStream(path.join(__dirname, 'data', 'airports.csv'), {encoding: 'latin1'})
       .pipe(csv(['id', 'name', 'city', 'country', 'IATA', 'ICAO', 'lat', 'lng', 'altitude', 'utcOffset', 'DST', 'tz', 'type', 'source']))
       .on('error', function (err) {
         console.error(err.stack)
