@@ -26,50 +26,45 @@ if (argv.version || argv.v) {
 // Start radio
 rtlsdr.start(argv)
 
-// Start HTTP server
-startServer()
+patterns.add('GET /', routes.index)
+patterns.add('GET /assets/{file}', routes.assets)
+patterns.add('GET /airlines', routes.airlines)
+patterns.add('GET /airports', routes.airports)
+patterns.add('GET /aircrafts', routes.aircrafts)
 
-function startServer () {
-  patterns.add('GET /', routes.index)
-  patterns.add('GET /assets/{file}', routes.assets)
-  patterns.add('GET /airlines', routes.airlines)
-  patterns.add('GET /airports', routes.airports)
-  patterns.add('GET /aircrafts', routes.aircrafts)
+const server = http.createServer(function (req, res) {
+  debug('%s %s', req.method, req.url)
 
-  const server = http.createServer(function (req, res) {
-    debug('%s %s', req.method, req.url)
+  const path = url.parse(req.url).pathname
+  const match = patterns.match(req.method + ' ' + path)
 
-    const path = url.parse(req.url).pathname
-    const match = patterns.match(req.method + ' ' + path)
-
-    if (!match) {
-      res.writeHead(404)
-      res.end()
-      return
-    }
-
-    const fn = match.value // expects the value to be a function
-    req.params = match.params
-
-    fn(req, res)
-  })
-
-  const customPort = argv.port || argv.p
-
-  if (customPort) listen(customPort)
-  else getPort({port: 3000}).then(listen)
-
-  function listen (port) {
-    server.listen(port, function () {
-      const url = 'http://localhost:' + port
-      if (argv.browser === false) {
-        console.log('Server running at: %s', url)
-      } else {
-        console.log('Opening %s in your favorite browser...', url)
-        opn(url)
-      }
-    })
+  if (!match) {
+    res.writeHead(404)
+    res.end()
+    return
   }
+
+  const fn = match.value // expects the value to be a function
+  req.params = match.params
+
+  fn(req, res)
+})
+
+const customPort = argv.port || argv.p
+
+if (customPort) listen(customPort)
+else getPort({port: 3000}).then(listen)
+
+function listen (port) {
+  server.listen(port, function () {
+    const url = 'http://localhost:' + port
+    if (argv.browser === false) {
+      console.log('Server running at: %s', url)
+    } else {
+      console.log('Opening %s in your favorite browser...', url)
+      opn(url)
+    }
+  })
 }
 
 function help () {
