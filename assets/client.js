@@ -18,7 +18,7 @@ const AIRPORT_VISIBILITY_THRESHOLD = [
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 ]
 const infoPanel = document.getElementById('info')
-let map, selectedMarker, planeIcon, currentPosition, openInfoWindow
+let map, selectedMarker, planeIcon, currentPosition, airportInfoWindow
 
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(function (position) {
@@ -73,7 +73,7 @@ function onAjaxError (jqXHR, textStatus, err) {
 function zoomLevelChanged () {
   const level = map.getZoom()
   airportMarkers.forEach(function (marker) {
-    const size = airportSize[marker.IATA]
+    const size = airportSize[marker.airport.IATA]
     const threshold = AIRPORT_VISIBILITY_THRESHOLD[level]
     marker.setVisible(threshold ? size > threshold : true)
   })
@@ -119,22 +119,25 @@ function plotAirports (airports) {
       icon: airportIcon,
       visible: visibilityThreshold ? size > visibilityThreshold : true
     })
-    marker.IATA = airport.IATA
-    marker.addListener('click', function () {
-      if (openInfoWindow) openInfoWindow.close()
-      else openInfoWindow = new google.maps.InfoWindow() // eslint-disable-line no-undef
-      openInfoWindow.setContent(`
-        <h3>${airport.name}</h3>
-        <table class="list">
-          <tr><th>IATA</th><td>${airport.IATA || 'n/a'}</td></tr>
-          <tr><th>ICAO</th><td>${airport.ICAO || 'n/a'}</td></tr>
-          <tr><th>Altitude</th><td>${airport.altitude === null ? 'n/a' : airport.altitude + ' ft'}</td></tr>
-        </table>
-      `)
-      openInfoWindow.open(map, marker)
-    })
+    marker.airport = airport
+    marker.addListener('click', airportMarkerClick)
     airportMarkers.push(marker)
   })
+}
+
+function airportMarkerClick () {
+  const airport = this.airport
+  if (airportInfoWindow) airportInfoWindow.close()
+  else airportInfoWindow = new google.maps.InfoWindow() // eslint-disable-line no-undef
+  airportInfoWindow.setContent(`
+    <h3>${airport.name}</h3>
+    <table class="list">
+      <tr><th>IATA</th><td>${airport.IATA || 'n/a'}</td></tr>
+      <tr><th>ICAO</th><td>${airport.ICAO || 'n/a'}</td></tr>
+      <tr><th>Altitude</th><td>${airport.altitude === null ? 'n/a' : airport.altitude + ' ft'}</td></tr>
+    </table>
+  `)
+  airportInfoWindow.open(map, this)
 }
 
 function plotAircrafts (aircrafts) {
