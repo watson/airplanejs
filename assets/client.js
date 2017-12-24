@@ -42,26 +42,16 @@ function initMap () {
   map.addListener('zoom_changed', zoomLevelChanged)
 
   onJQuery(function () {
-    // eslint-disable-next-line no-undef
-    $.getJSON('airports', plotAirports)
-      .fail(function (jqXHR, textStatus, err) {
-        throw err
-      })
-
-    // eslint-disable-next-line no-undef
-    $.getJSON('airlines', parseAirlines)
-      .fail(function (jqXHR, textStatus, err) {
-        throw err
-      })
-
+    $.getJSON('airports', plotAirports).fail(onAjaxError) // eslint-disable-line no-undef
+    $.getJSON('airlines', parseAirlines).fail(onAjaxError) // eslint-disable-line no-undef
     setInterval(function () {
-      // eslint-disable-next-line no-undef
-      $.getJSON('aircrafts', plotAircrafts)
-        .fail(function (jqXHR, textStatus, err) {
-          throw err
-        })
+      $.getJSON('aircrafts', plotAircrafts).fail(onAjaxError) // eslint-disable-line no-undef
     }, 2000)
   })
+}
+
+function onAjaxError (jqXHR, textStatus, err) {
+  throw err
 }
 
 function zoomLevelChanged () {
