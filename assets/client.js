@@ -73,7 +73,7 @@ function onAjaxError (jqXHR, textStatus, err) {
 function zoomLevelChanged () {
   const level = map.getZoom()
   airportMarkers.forEach(function (marker) {
-    const size = airportSize[marker.airport.IATA]
+    const size = airportSize[marker.IATA]
     const threshold = AIRPORT_VISIBILITY_THRESHOLD[level]
     marker.setVisible(threshold ? size > threshold : true)
   })
@@ -119,27 +119,25 @@ function plotAirports (airports) {
       icon: airportIcon,
       visible: visibilityThreshold ? size > visibilityThreshold : true
     })
-    marker.airport = airport
-    // eslint-disable-next-line no-undef
-    const infoWindow = new google.maps.InfoWindow({
-      content: `
-        <h3>${airport.name}</h3>
-        <table class="list">
-          <tr><th>IATA</th><td>${airport.IATA || 'n/a'}</td></tr>
-          <tr><th>ICAO</th><td>${airport.ICAO || 'n/a'}</td></tr>
-          <tr><th>Altitude</th><td>${airport.altitude === null ? 'n/a' : airport.altitude + ' ft'}</td></tr>
-        </table>
-      `
+    marker.IATA = airport.IATA
+    marker.addListener('click', function () {
+      if (openInfoWindow) openInfoWindow.close()
+      // eslint-disable-next-line no-undef
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <h3>${airport.name}</h3>
+          <table class="list">
+            <tr><th>IATA</th><td>${airport.IATA || 'n/a'}</td></tr>
+            <tr><th>ICAO</th><td>${airport.ICAO || 'n/a'}</td></tr>
+            <tr><th>Altitude</th><td>${airport.altitude === null ? 'n/a' : airport.altitude + ' ft'}</td></tr>
+          </table>
+        `
+      })
+      infoWindow.open(map, marker)
+      openInfoWindow = infoWindow
     })
-    marker.addListener('click', airportClick.bind(infoWindow, marker))
     airportMarkers.push(marker)
   })
-
-  function airportClick (marker) {
-    if (openInfoWindow) openInfoWindow.close()
-    this.open(map, marker)
-    openInfoWindow = this
-  }
 }
 
 function plotAircrafts (aircrafts) {
