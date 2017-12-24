@@ -122,19 +122,16 @@ function plotAirports (airports) {
     marker.IATA = airport.IATA
     marker.addListener('click', function () {
       if (openInfoWindow) openInfoWindow.close()
-      // eslint-disable-next-line no-undef
-      const infoWindow = new google.maps.InfoWindow({
-        content: `
-          <h3>${airport.name}</h3>
-          <table class="list">
-            <tr><th>IATA</th><td>${airport.IATA || 'n/a'}</td></tr>
-            <tr><th>ICAO</th><td>${airport.ICAO || 'n/a'}</td></tr>
-            <tr><th>Altitude</th><td>${airport.altitude === null ? 'n/a' : airport.altitude + ' ft'}</td></tr>
-          </table>
-        `
-      })
-      infoWindow.open(map, marker)
-      openInfoWindow = infoWindow
+      else openInfoWindow = new google.maps.InfoWindow() // eslint-disable-line no-undef
+      openInfoWindow.setContent(`
+        <h3>${airport.name}</h3>
+        <table class="list">
+          <tr><th>IATA</th><td>${airport.IATA || 'n/a'}</td></tr>
+          <tr><th>ICAO</th><td>${airport.ICAO || 'n/a'}</td></tr>
+          <tr><th>Altitude</th><td>${airport.altitude === null ? 'n/a' : airport.altitude + ' ft'}</td></tr>
+        </table>
+      `)
+      openInfoWindow.open(map, marker)
     })
     airportMarkers.push(marker)
   })
