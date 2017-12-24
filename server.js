@@ -30,6 +30,7 @@ patterns.add('GET /', routes.index)
 patterns.add('GET /assets/{file}', routes.assets)
 patterns.add('GET /airlines', routes.airlines)
 patterns.add('GET /airports', routes.airports)
+patterns.add('GET /routes', routes.routes)
 patterns.add('GET /aircrafts', routes.aircrafts)
 
 const server = http.createServer(function (req, res) {

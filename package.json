@@ -19,9 +19,10 @@
     "standard": "^10.0.3"
   },
   "scripts": {
-    "data": "npm run data-airlines && npm run data-airports",
+    "data": "npm run data-airlines && npm run data-airports && npm run data-routes",
     "data-airlines": "mkdir -p data && curl -o data/airlines.csv https://raw.githubusercontent.com/jpatokal/openflights/master/data/airlines.dat",
     "data-airports": "mkdir -p data && curl -o data/airports.csv https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat",
+    "data-routes": "mkdir -p data && curl -o data/routes.csv https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat",
     "postinstall": "npm run data",
     "test": "standard"
   },

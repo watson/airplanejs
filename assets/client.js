@@ -2,7 +2,21 @@
 
 const aircraftIndex = {}
 const airlineICAOIndex = {}
+const airportSize = {}
 const airportMarkers = []
+const INITIAL_ZOOM_LEVEL = 9
+const AIRPORT_VISIBILITY_THRESHOLD = [
+  null,
+  200,
+  150,
+  120,
+  100,
+  80,
+  60,
+  40,
+  20,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+]
 const infoPanel = document.getElementById('info')
 let map, selectedMarker, planeIcon, currentPosition, openInfoWindow
 
@@ -33,7 +47,7 @@ function initMap () {
 
   // eslint-disable-next-line no-undef
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 9,
+    zoom: INITIAL_ZOOM_LEVEL,
     center: currentPosition
       ? new google.maps.LatLng(currentPosition.lat, currentPosition.lng) // eslint-disable-line no-undef
       : new google.maps.LatLng(48.9062802, 2.3598659) // eslint-disable-line no-undef
@@ -42,7 +56,9 @@ function initMap () {
   map.addListener('zoom_changed', zoomLevelChanged)
 
   onJQuery(function ($) {
-    $.getJSON('airports', plotAirports).fail(onAjaxError)
+    $.getJSON('routes', parseRoutes).fail(onAjaxError).done(function () {
+      $.getJSON('airports', plotAirports).fail(onAjaxError)
+    })
     $.getJSON('airlines', parseAirlines).fail(onAjaxError)
     setInterval(function () {
       $.getJSON('aircrafts', plotAircrafts).fail(onAjaxError)
@@ -57,13 +73,9 @@ function onAjaxError (jqXHR, textStatus, err) {
 function zoomLevelChanged () {
   const level = map.getZoom()
   airportMarkers.forEach(function (marker) {
-    let visible = true
-    if (level >= 6 && level <= 7) {
-      visible = !!marker.airport.IATA
-    } else if (level < 6) {
-      visible = false
-    }
-    marker.setVisible(visible)
+    const size = airportSize[marker.airport.IATA]
+    const threshold = AIRPORT_VISIBILITY_THRESHOLD[level]
+    marker.setVisible(threshold ? size > threshold : true)
   })
 }
 
@@ -71,6 +83,20 @@ function parseAirlines (airlines) {
   airlines.forEach(function (airline) {
     airlineICAOIndex[airline.ICAO] = airline
   })
+}
+
+function parseRoutes (routes) {
+  routes.forEach(function (route) {
+    tickAirport(route.source)
+    tickAirport(route.dest)
+  })
+}
+
+// Keep a record of how many routes fly to and from a given airport.
+// This helps us know how big an airport is.
+function tickAirport (IATA) {
+  if (!airportSize[IATA]) airportSize[IATA] = 1
+  else airportSize[IATA]++
 }
 
 function plotAirports (airports) {
@@ -81,14 +107,17 @@ function plotAirports (airports) {
     fillOpacity: 1,
     scale: 0.03
   }
+  const visibilityThreshold = AIRPORT_VISIBILITY_THRESHOLD[INITIAL_ZOOM_LEVEL]
 
   airports.forEach(function (airport) {
+    const size = airportSize[airport.IATA]
     // eslint-disable-next-line no-undef
     const marker = new google.maps.Marker({
       position: {lat: airport.lat, lng: airport.lng},
       map: map,
       title: airport.name,
-      icon: airportIcon
+      icon: airportIcon,
+      visible: visibilityThreshold ? size > visibilityThreshold : true
     })
     marker.airport = airport
     // eslint-disable-next-line no-undef
