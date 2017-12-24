@@ -1,19 +1,16 @@
 #!/usr/bin/env node
 'use strict'
 
-const fs = require('fs')
 const url = require('url')
-const path = require('path')
 const http = require('http')
 const debug = require('debug')('airplanejs')
 const getPort = require('get-port')
 const opn = require('opn')
-const csv = require('csv-parser')
 const patterns = require('patterns')()
-const mime = require('mime-types')
 const rtlsdr = require('rtl-sdr')
 const Demodulator = require('mode-s-demodulator')
-const AircraftStore = require('mode-s-aircraft-store')
+const store = require('./lib/store')
+const routes = require('./lib/routes')
 
 const DEFAULT_RATE = 2000000
 const DEFAULT_FREQ = 1090000000
@@ -33,11 +30,8 @@ if (argv.version || argv.v) {
   process.exit()
 }
 
-const ASSETS_FILES = fs.readdirSync(path.join(__dirname, 'assets'))
-
 const noop = function () {}
 const demodulator = new Demodulator()
-const store = new AircraftStore()
 
 // Connect to RTLSDR device
 const dev = setupDevice()
@@ -114,108 +108,11 @@ function setupDevice () {
 }
 
 function startServer () {
-  patterns.add('GET /', function (req, res) {
-    res.setHeader('Content-Type', 'text/html')
-    fs.createReadStream(path.join(__dirname, 'assets', 'index.html')).pipe(res)
-  })
-
-  patterns.add('GET /assets/{file}', function (req, res) {
-    const filename = req.params.file
-
-    if (ASSETS_FILES.indexOf(filename) === -1) {
-      res.writeHead(404)
-      res.end()
-      return
-    }
-
-    res.setHeader('Content-Type', mime.lookup(filename))
-    fs.createReadStream(path.join(__dirname, 'assets', filename)).pipe(res)
-  })
-
-  patterns.add('GET /airlines', function (req, res) {
-    let first = true
-    res.setHeader('Content-Type', 'application/json')
-
-    fs.createReadStream(path.join(__dirname, 'data', 'airlines.csv'))
-      .pipe(csv(['id', 'name', 'alias', 'IATA', 'ICAO', 'callsign', 'country', 'active']))
-      .on('error', function (err) {
-        console.error(err.stack)
-        if (first) res.writeHead(500)
-        res.end()
-      })
-      .on('data', function (row) {
-        Object.keys(row).forEach(function (key) {
-          if (row[key] === '\\N') row[key] = null
-        })
-        row.id = Number.parseInt(row.id, 10)
-        row.active = row.active === 'Y'
-
-        // defunct airlines are not flying planes, so no need to return those
-        if (!row.active) return
-
-        res.write((first ? '[\n' : ',') + JSON.stringify(row) + '\n')
-        first = false
-      })
-      .on('end', function () {
-        res.end(']')
-      })
-  })
-
-  patterns.add('GET /airports', function (req, res) {
-    let first = true
-    res.setHeader('Content-Type', 'application/json')
-
-    fs.createReadStream(path.join(__dirname, 'data', 'airports.csv'))
-      .pipe(csv(['id', 'name', 'city', 'country', 'IATA', 'ICAO', 'lat', 'lng', 'altitude', 'utcOffset', 'DST', 'tz', 'type', 'source']))
-      .on('error', function (err) {
-        console.error(err.stack)
-        if (first) res.writeHead(500)
-        res.end()
-      })
-      .on('data', function (row) {
-        Object.keys(row).forEach(function (key) {
-          if (row[key] === '\\N') row[key] = null
-        })
-        row.id = Number.parseInt(row.id, 10)
-        row.lat = row.lat ? Number.parseFloat(row.lat) : null
-        row.lng = row.lng ? Number.parseFloat(row.lng) : null
-        row.utcOffset = row.utcOffset ? Number.parseFloat(row.utcOffset) : null
-        row.altitude = row.altitude ? Number.parseInt(row.altitude, 10) : null
-
-        res.write((first ? '[\n' : ',') + JSON.stringify(row) + '\n')
-        first = false
-      })
-      .on('end', function () {
-        res.end(']')
-      })
-  })
-
-  patterns.add('GET /aircrafts', function (req, res) {
-    const aircrafts = store
-      .getAircrafts()
-      .filter(function (aircraft) {
-        // We only want to plot aircrafts that have a geolocation
-        return aircraft.lat
-      })
-      .map(function (aircraft) {
-        return {
-          icao: aircraft.icao,
-          count: aircraft.count,
-          seen: aircraft.seen,
-          lat: aircraft.lat,
-          lng: aircraft.lng,
-          altitude: aircraft.altitude,
-          unit: aircraft.unit,
-          heading: Math.round(aircraft.heading),
-          speed: Math.round(aircraft.speed),
-          callsign: aircraft.callsign
-        }
-      })
-    const body = JSON.stringify(aircrafts)
-    res.setHeader('Content-Type', 'application/json')
-    res.setHeader('Content-Length', Buffer.byteLength(body))
-    res.end(body)
-  })
+  patterns.add('GET /', routes.index)
+  patterns.add('GET /assets/{file}', routes.assets)
+  patterns.add('GET /airlines', routes.airlines)
+  patterns.add('GET /airports', routes.airports)
+  patterns.add('GET /aircrafts', routes.aircrafts)
 
   const server = http.createServer(function (req, res) {
     debug('%s %s', req.method, req.url)
