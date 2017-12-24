@@ -41,11 +41,11 @@ function initMap () {
 
   map.addListener('zoom_changed', zoomLevelChanged)
 
-  onJQuery(function () {
-    $.getJSON('airports', plotAirports).fail(onAjaxError) // eslint-disable-line no-undef
-    $.getJSON('airlines', parseAirlines).fail(onAjaxError) // eslint-disable-line no-undef
+  onJQuery(function ($) {
+    $.getJSON('airports', plotAirports).fail(onAjaxError)
+    $.getJSON('airlines', parseAirlines).fail(onAjaxError)
     setInterval(function () {
-      $.getJSON('aircrafts', plotAircrafts).fail(onAjaxError) // eslint-disable-line no-undef
+      $.getJSON('aircrafts', plotAircrafts).fail(onAjaxError)
     }, 2000)
   })
 }
@@ -162,7 +162,7 @@ function aircrafts () {
 }
 
 function onJQuery (cb) {
-  if (window.jQuery) cb()
+  if (window.jQuery) cb(window.jQuery)
   else setTimeout(onJQuery.bind(null, cb), 50)
 }
 
