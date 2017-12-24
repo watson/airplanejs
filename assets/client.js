@@ -2,6 +2,7 @@
 
 const aircraftIndex = {}
 const airlineICAOIndex = {}
+const airportMarkers = []
 const infoPanel = document.getElementById('info')
 let map, selectedMarker, planeIcon, currentPosition, openInfoWindow
 
@@ -38,6 +39,8 @@ function initMap () {
       : new google.maps.LatLng(48.9062802, 2.3598659) // eslint-disable-line no-undef
   })
 
+  map.addListener('zoom_changed', zoomLevelChanged)
+
   onJQuery(function () {
     // eslint-disable-next-line no-undef
     $.getJSON('airports', plotAirports)
@@ -58,6 +61,19 @@ function initMap () {
           throw err
         })
     }, 2000)
+  })
+}
+
+function zoomLevelChanged () {
+  const level = map.getZoom()
+  airportMarkers.forEach(function (marker) {
+    let visible = true
+    if (level >= 6 && level <= 7) {
+      visible = !!marker.airport.IATA
+    } else if (level < 6) {
+      visible = false
+    }
+    marker.setVisible(visible)
   })
 }
 
@@ -84,6 +100,7 @@ function plotAirports (airports) {
       title: airport.name,
       icon: airportIcon
     })
+    marker.airport = airport
     // eslint-disable-next-line no-undef
     const infoWindow = new google.maps.InfoWindow({
       content: `
@@ -96,6 +113,7 @@ function plotAirports (airports) {
       `
     })
     marker.addListener('click', airportClick.bind(infoWindow, marker))
+    airportMarkers.push(marker)
   })
 
   function airportClick (marker) {
