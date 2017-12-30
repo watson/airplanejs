@@ -271,7 +271,7 @@ Aircraft.prototype.toHTML = function () {
   if (this.callsign) {
     // Use noreferrer because Flightradar24.com would otherwise respond with 418
     html += `
-      <a href="https://www.flightradar24.com/${this.callsign}" rel="noreferrer">Flightradar24.com</a>
+      <a href="https://www.flightradar24.com/${this.callsign}" class="external" target="_blank" rel="noreferrer">Flightradar24.com</a>
     `
   }
 
