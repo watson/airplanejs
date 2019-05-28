@@ -5,7 +5,7 @@ const url = require('url')
 const http = require('http')
 const debug = require('debug')('airplanejs')
 const getPort = require('get-port')
-const opn = require('opn')
+const open = require('open')
 const patterns = require('patterns')()
 const rtlsdr = require('./lib/rtlsdr')
 const routes = require('./lib/routes')
@@ -63,7 +63,7 @@ function listen (port) {
       console.log('Server running at: %s', url)
     } else {
       console.log('Opening %s in your favorite browser...', url)
-      opn(url)
+      open(url)
     }
   })
 }
